@@ -77,7 +77,7 @@ create table municipios (
     id_municipio serial primary key,
     id_estado int not null,
     nome varchar(60) not null,
-    codigo_ibge int not null,
+    codigo_ibge int unique not null,
     Foreign Key (id_estado) REFERENCES estados (id_estado)
 );
 
