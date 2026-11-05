@@ -5,6 +5,7 @@ import prisma from './db.js';
 // rotas
 
 import estacionamentosRoutes from './routes/proprietarios/estacionamentos.js';
+import ibgeRoutes from './routes/apiExt/ibge.js';
 
 const app = express();
 
@@ -12,7 +13,11 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
+// registro de prefixios das rotas
+
 app.use('/estacionamentos', estacionamentosRoutes);
+
+app.use('/ibge', ibgeRoutes);
 
 app.use((err, req, res, next) => {
   if (err.code === 'P2025')

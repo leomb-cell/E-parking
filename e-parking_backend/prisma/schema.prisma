@@ -144,7 +144,7 @@ model municipios {
   id_municipio Int         @id @default(autoincrement())
   id_estado    Int
   nome         String      @db.VarChar(60)
-  codigo_ibge  Int
+  codigo_ibge  Int         @unique
   enderecos    enderecos[]
   estados      estados     @relation(fields: [id_estado], references: [id_estado], onDelete: NoAction, onUpdate: NoAction)
 }
