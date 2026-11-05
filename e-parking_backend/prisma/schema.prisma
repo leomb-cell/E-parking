@@ -1,0 +1,289 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model administradores_plataforma {
+  id_adm      Int       @id @default(autoincrement())
+  id_usuario  Int
+  id_cargo    Int
+  dt_registro DateTime? @default(now()) @db.Timestamptz(6)
+  cargos      cargos    @relation(fields: [id_cargo], references: [id_cargo], onDelete: NoAction, onUpdate: NoAction)
+  usuarios    usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model bench_config {
+  qtd_usuarios        Int
+  qtd_motoristas      Int
+  qtd_proprietarios   Int
+  qtd_estacionamentos Int
+  qtd_veiculos        Int
+  qtd_reservas        Int
+
+  @@ignore
+}
+
+model bench_params {
+  chave String  @id @db.VarChar(30)
+  valor String?
+}
+
+model bench_resultados {
+  id             Int       @id @default(autoincrement())
+  executado_em   DateTime? @default(now()) @db.Timestamptz(6)
+  grupo          String?   @db.VarChar(30)
+  teste          String?   @db.VarChar(120)
+  repeticoes     Int?
+  tempo_total_ms Decimal?  @db.Decimal(14, 2)
+  tempo_medio_ms Decimal?  @db.Decimal(14, 3)
+  tempo_min_ms   Decimal?  @db.Decimal(14, 3)
+  tempo_max_ms   Decimal?  @db.Decimal(14, 3)
+  linhas         BigInt?
+  erro           String?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model bench_tabelas {
+  tab String?
+  col String?
+
+  @@ignore
+}
+
+model cargos {
+  id_cargo                   Int                          @id @default(autoincrement())
+  nome_cargo                 String                       @db.VarChar(100)
+  administradores_plataforma administradores_plataforma[]
+  operadores_estacionamento  operadores_estacionamento[]
+}
+
+model enderecos {
+  id_endereco     Int               @id @default(autoincrement())
+  id_municipio    Int
+  logradouro      String            @db.VarChar(150)
+  numero          String?           @db.VarChar(10)
+  complemento     String?           @db.VarChar(50)
+  bairro          String            @db.VarChar(70)
+  cep             String            @db.Char(8)
+  longitude       Decimal           @db.Decimal(11, 8)
+  latitude        Decimal           @db.Decimal(10, 8)
+  municipios      municipios        @relation(fields: [id_municipio], references: [id_municipio], onDelete: NoAction, onUpdate: NoAction)
+  estacionamentos estacionamentos[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model estacionamentos {
+  id_estacionamento Int           @id @default(autoincrement())
+  id_proprietario   Int
+  id_endereco       Int
+  qtd_vagas_idoso   Int           @default(0)
+  qtd_vagas_pcd     Int           @default(0)
+  qtd_vagas_comum   Int           @default(0)
+  lotacao_atual     Int           @default(0)
+  nome              String        @db.VarChar(255)
+  hr_abertura       DateTime      @db.Time(6)
+  hr_fechamento     DateTime      @db.Time(6)
+  num_alvara        String        @db.VarChar(50)
+  validade_alvara   DateTime      @db.Date
+  enderecos         enderecos     @relation(fields: [id_endereco], references: [id_endereco], onDelete: NoAction, onUpdate: NoAction)
+  proprietarios     proprietarios @relation(fields: [id_proprietario], references: [id_proprietario], onDelete: NoAction, onUpdate: NoAction)
+  reservas          reservas[]
+  tarifas           tarifas[]
+
+  @@index([id_endereco], map: "index_e_endereco")
+  @@index([id_proprietario], map: "index_e_proprietario")
+}
+
+model estados {
+  id_estado   Int          @id @default(autoincrement())
+  nome        String       @db.VarChar(30)
+  uf          String       @unique @db.Char(2)
+  codigo_ibge Int          @unique
+  municipios  municipios[]
+}
+
+model login_usuarios {
+  id_login       Int       @id @default(autoincrement())
+  id_usuario     Int       @unique
+  email          String    @unique(map: "index_l_email") @db.VarChar(255)
+  senha_hash     String    @db.VarChar(60)
+  jwt_token      String?   @db.VarChar(500)
+  validade_token DateTime? @db.Timestamptz(6)
+  usuarios       usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model motoristas {
+  id_motorista           Int                      @id @default(autoincrement())
+  id_usuario             Int
+  dt_registro            DateTime?                @default(now()) @db.Timestamptz(6)
+  usuarios               usuarios                 @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  motoristas_autorizados motoristas_autorizados[]
+  reservas               reservas[]
+  veiculos               veiculos[]
+
+  @@index([id_usuario], map: "index_m_usuario")
+}
+
+model motoristas_autorizados {
+  id_motorista   Int
+  id_veiculo     Int
+  dt_autorizacao DateTime?  @default(now()) @db.Timestamptz(6)
+  dt_revogacao   DateTime?  @db.Timestamptz(6)
+  motoristas     motoristas @relation(fields: [id_motorista], references: [id_motorista], onDelete: NoAction, onUpdate: NoAction)
+  veiculos       veiculos   @relation(fields: [id_veiculo], references: [id_veiculo], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_motorista, id_veiculo])
+}
+
+model municipios {
+  id_municipio Int         @id @default(autoincrement())
+  id_estado    Int
+  nome         String      @db.VarChar(60)
+  codigo_ibge  Int
+  enderecos    enderecos[]
+  estados      estados     @relation(fields: [id_estado], references: [id_estado], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model operadores_estacionamento {
+  id_operador     Int           @id @default(autoincrement())
+  id_usuario      Int
+  id_proprietario Int
+  id_cargo        Int
+  dt_registro     DateTime?     @default(now()) @db.Timestamptz(6)
+  cargos          cargos        @relation(fields: [id_cargo], references: [id_cargo], onDelete: NoAction, onUpdate: NoAction)
+  proprietarios   proprietarios @relation(fields: [id_proprietario], references: [id_proprietario], onDelete: NoAction, onUpdate: NoAction)
+  usuarios        usuarios      @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model proprietarios {
+  id_proprietario           Int                         @id @default(autoincrement())
+  id_usuario                Int
+  dt_registro               DateTime                    @default(now()) @db.Timestamptz(6)
+  estacionamentos           estacionamentos[]
+  operadores_estacionamento operadores_estacionamento[]
+  usuarios                  usuarios                    @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  resumo_financeiro         resumo_financeiro[]
+
+  @@index([id_usuario], map: "index_p_usuario")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model reservas {
+  id_reserva         Int             @id @default(autoincrement())
+  id_motorista       Int
+  id_estacionamento  Int
+  id_veiculo         Int
+  id_status          Int
+  dt_inicio_previsto DateTime        @db.Timestamptz(6)
+  dt_fim_previsto    DateTime        @db.Timestamptz(6)
+  dt_inicio_real     DateTime?       @db.Timestamptz(6)
+  dt_fim_real        DateTime?       @db.Timestamptz(6)
+  valor              Decimal         @db.Decimal(10, 2)
+  codigo_voucher     String?         @db.Char(4)
+  estacionamentos    estacionamentos @relation(fields: [id_estacionamento], references: [id_estacionamento], onDelete: NoAction, onUpdate: NoAction)
+  motoristas         motoristas      @relation(fields: [id_motorista], references: [id_motorista], onDelete: NoAction, onUpdate: NoAction)
+  status_reserva     status_reserva  @relation(fields: [id_status], references: [id_status], onDelete: NoAction, onUpdate: NoAction)
+  veiculos           veiculos        @relation(fields: [id_veiculo], references: [id_veiculo], onDelete: NoAction, onUpdate: NoAction)
+  transacoes         transacoes[]
+
+  @@index([id_estacionamento, dt_inicio_previsto], map: "index_r_estac_inicio")
+  @@index([id_estacionamento], map: "index_r_estacionamento")
+  @@index([id_motorista], map: "index_r_motorista")
+  @@index([id_status], map: "index_r_status")
+}
+
+model resumo_financeiro {
+  id_proprietario Int
+  dt_movimento    DateTime      @db.Date
+  total_dia       Decimal       @db.Decimal(12, 2)
+  qtd_reservas    Int
+  gerado_em       DateTime      @default(now()) @db.Timestamptz(6)
+  proprietarios   proprietarios @relation(fields: [id_proprietario], references: [id_proprietario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_proprietario, dt_movimento])
+}
+
+model status_reserva {
+  id_status   Int        @id @default(autoincrement())
+  status_nome String     @db.VarChar(50)
+  reservas    reservas[]
+}
+
+model status_transacao {
+  id_tr_status   Int          @id @default(autoincrement())
+  tr_status_nome String?      @db.VarChar(50)
+  transacoes     transacoes[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tarifas {
+  id_tarifa         Int             @id @default(autoincrement())
+  id_estacionamento Int
+  id_tipo           Int
+  vlr_hora          Decimal         @db.Decimal(10, 2)
+  tolerancia_min    Int             @default(0)
+  multa_excedente   Decimal         @db.Decimal(10, 2)
+  vigente_de        DateTime        @default(dbgenerated("CURRENT_DATE")) @db.Date
+  vigente_ate       DateTime?       @db.Date
+  estacionamentos   estacionamentos @relation(fields: [id_estacionamento], references: [id_estacionamento], onDelete: NoAction, onUpdate: NoAction)
+  tipos_veiculos    tipos_veiculos  @relation(fields: [id_tipo], references: [id_tipo], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id_estacionamento], map: "index_tar_ewstacionamento")
+}
+
+model tipos_veiculos {
+  id_tipo  Int        @id @default(autoincrement())
+  tipo     String?    @db.VarChar(30)
+  tarifas  tarifas[]
+  veiculos veiculos[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model transacoes {
+  id_transacao     Int              @id @default(autoincrement())
+  id_reserva       Int
+  valor            Decimal          @db.Decimal(10, 2)
+  dt_transacao     DateTime         @default(now()) @db.Timestamptz(6)
+  id_tr_status     Int
+  metodo_pagamento String           @db.VarChar(100)
+  reservas         reservas         @relation(fields: [id_reserva], references: [id_reserva], onDelete: NoAction, onUpdate: NoAction)
+  status_transacao status_transacao @relation(fields: [id_tr_status], references: [id_tr_status], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id_reserva], map: "index_t_reserva")
+}
+
+model usuarios {
+  id_usuario                 Int                          @id @default(autoincrement())
+  nome                       String?                      @db.VarChar(100)
+  cpf_cnpj                   String                       @unique @db.VarChar(14)
+  dt_nascimento              DateTime                     @db.Date
+  num_telefone               String                       @db.VarChar(50)
+  administradores_plataforma administradores_plataforma[]
+  login_usuarios             login_usuarios?
+  motoristas                 motoristas[]
+  operadores_estacionamento  operadores_estacionamento[]
+  proprietarios              proprietarios[]
+}
+
+model veiculos {
+  id_veiculo             Int                      @id @default(autoincrement())
+  id_dono                Int
+  id_tipo                Int
+  modelo                 String?                  @db.VarChar(50)
+  placa                  String                   @unique @db.VarChar(10)
+  cor                    String?                  @db.VarChar(16)
+  dt_registro            DateTime?                @default(now()) @db.Timestamptz(6)
+  motoristas_autorizados motoristas_autorizados[]
+  reservas               reservas[]
+  motoristas             motoristas               @relation(fields: [id_dono], references: [id_motorista], onDelete: NoAction, onUpdate: NoAction)
+  tipos_veiculos         tipos_veiculos           @relation(fields: [id_tipo], references: [id_tipo], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id_dono], map: "index_v_dono")
+  @@index([id_tipo], map: "index_v_tipo")
+}
