@@ -9,6 +9,7 @@ const nome = document.getElementById("nome");
 const endereco = document.getElementById("endereco");
 const totalVagas = document.getElementById("totalVagas");
 const tabela = document.getElementById("tabela");
+const cep = document.getElementById("cep");
 
 // funções
 

@@ -32,6 +32,21 @@
       rel="stylesheet"
     />
 
+    <!-- scripts -->
+
+    <script src="../../static/components/navbar.js" defer></script>
+
+    <script src="./meus_estacionamentos.js" defer></script>
+
+    <script src="../../static/components/footer.js" defer></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+      defer
+    ></script>
+
     <title>E-Parking Florianópolis</title>
   </head>
   <body>
@@ -51,7 +66,7 @@
     <main id="main_container">
       <button
         type="button"
-        class="btn btn-add"
+        class="btn btn-add ms-2 mb-3"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
         data-bs-whatever="add"
@@ -81,7 +96,13 @@
             </div>
             <div class="modal-body">
               <form id="formulario">
+                <!-- Informações Gerais -->
+
+                <!-- nome do estacionamento -->
                 <div class="mb-3">
+                  <label for="nome" class="form-label"
+                    >Nome do Estacionamento</label
+                  >
                   <input
                     type="text"
                     class="form-control"
@@ -89,39 +110,190 @@
                     id="nome"
                   />
                 </div>
-                <div class="mb-3">
-                  <textarea
-                    class="form-control"
-                    placeholder="Endereço"
-                    id="endereco"
-                  ></textarea>
+
+                <!-- Endereço -->
+                <div>
+                  <div class="row">
+                    <!-- cep -->
+                    <div class="col mb-3">
+                      <label for="cep" class="form-label">CEP</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="CEP"
+                        id="cep"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!-- estado -->
+                    <div class="col-md-6 mb-3">
+                      <label for="id_municipio" class="form-label"
+                        >Estado</label
+                      >
+                      <select class="form-control" id="id_estado">
+                        <option value="" disabled selected>
+                          Selecione um estado...
+                        </option>
+                      </select>
+                    </div>
+
+                    <!-- municipio -->
+                    <div class="col-md-6 mb-3">
+                      <label for="id_municipio" class="form-label"
+                        >Município</label
+                      >
+                      <select class="form-control" id="id_municipio">
+                        <option value="" disabled selected>
+                          Selecione um município...
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!-- Bairro -->
+                    <div class="col-md-12 mb-3">
+                      <label for="bairro" class="form-label">Bairro</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Bairro"
+                        id="bairro"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!-- Logradouro -->
+                    <div class="col-md-9 mb-3">
+                      <label for="logradouro" class="form-label"
+                        >Logradouro</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Logradouro"
+                        id="logradouro"
+                      />
+                    </div>
+
+                    <!-- Numero -->
+                    <div class="col-md-3 mb-3">
+                      <label for="numero" class="form-label">Número</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Número"
+                        id="numero"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <textarea
-                    class="form-control"
-                    placeholder="Total de Vagas"
-                    id="totalVagas"
-                  ></textarea>
+
+                <!-- Alvará de Funcionamento -->
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="num_alvara" class="form-label">Nº Alvará</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Número do Alvará"
+                      id="num_alvara"
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="validade_alvara" class="form-label"
+                      >Validade do Alvará</label
+                    >
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="validade_alvara"
+                    />
+                  </div>
                 </div>
-                <button type="submit" class="btn btn-confirmar">
-                  Confirmar
-                </button>
+
+                <!-- Horário de Funcionamento -->
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="hr_abertura" class="form-label"
+                      >Horário Abertura</label
+                    >
+                    <input type="time" class="form-control" id="hr_abertura" />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="hr_fechamento" class="form-label"
+                      >Horário Fechamento</label
+                    >
+                    <input
+                      type="time"
+                      class="form-control"
+                      id="hr_fechamento"
+                    />
+                  </div>
+                </div>
+
+                <!-- Vagas -->
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="qtd_vagas_comum" class="form-label"
+                      >Vagas Comuns</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Qtd. Comum"
+                      id="qtd_vagas_comum"
+                    />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="qtd_vagas_pcd" class="form-label"
+                      >Vagas PCD</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Qtd. PCD"
+                      id="qtd_vagas_pcd"
+                    />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="qtd_vagas_idoso" class="form-label"
+                      >Vagas Idoso</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Qtd. Idoso"
+                      id="qtd_vagas_idoso"
+                    />
+                  </div>
+                </div>
+
+                <!-- Botão de Ação -->
+                <div class="row">
+                  <div class="col-md-6 d-flex justify-content-start">
+                    <button type="submit" class="btn btn-confirmar">
+                      Confirmar
+                    </button>
+                  </div>
+                  <div class="col-md-6 d-flex justify-content-end">
+                    <button
+                      type="button"
+                      class="btn btn-fechar"
+                      data-bs-dismiss="modal"
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                </div>
               </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-fechar"
-                data-bs-dismiss="modal"
-              >
-                Fechar
-              </button>
             </div>
           </div>
         </div>
       </div>
-
-      <p></p>
 
       <table class="table">
         <thead>
@@ -143,19 +315,5 @@
       cssSrc="static/css/footer.css"
       base="../../"
     ></custom-footer>
-
-    <!-- Scripts -->
-
-    <script src="../../static/components/navbar.js"></script>
-
-    <script src="./meus_estacionamentos.js"></script>
-
-    <script src="../../static/components/footer.js"></script>
-
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
   </body>
 </html>
