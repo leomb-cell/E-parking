@@ -6,6 +6,7 @@ import prisma from './db.js';
 
 import estacionamentosRoutes from './routes/proprietarios/estacionamentos.js';
 import ibgeRoutes from './routes/apiExt/ibge.js';
+import enderecosRoutes from './routes/proprietarios/enderecos.js';
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use('/estacionamentos', estacionamentosRoutes);
 
 app.use('/ibge', ibgeRoutes);
+
+app.use('/enderecos', enderecosRoutes);
 
 app.use((err, req, res, next) => {
   if (err.code === 'P2025')
