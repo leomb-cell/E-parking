@@ -1,7 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import prisma from './db.js';
-
+import cors from 'cors'
 // rotas
 
 import estacionamentosRoutes from './routes/proprietarios/estacionamentos.js';
@@ -9,6 +9,8 @@ import ibgeRoutes from './routes/apiExt/ibge.js';
 import enderecosRoutes from './routes/proprietarios/enderecos.js';
 
 const app = express();
+
+app.app?.use(cors()) || app.use(cors());
 
 const port = process.env.PORT || 3001;
 

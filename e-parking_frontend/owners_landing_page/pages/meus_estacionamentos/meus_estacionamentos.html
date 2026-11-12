@@ -33,13 +33,11 @@
     />
 
     <!-- scripts -->
-
+    <script src="../../api.js"></script>
+    <script src="../../config.js"></script>
     <script src="../../static/components/navbar.js" defer></script>
-
-    <script src="./meus_estacionamentos.js" defer></script>
-
     <script src="../../static/components/footer.js" defer></script>
-
+    <script src="./meus_estacionamentos.js" defer></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -96,9 +94,10 @@
             </div>
             <div class="modal-body">
               <form id="formulario">
-                <!-- Informações Gerais -->
 
-                <!-- nome do estacionamento -->
+                <input type="hidden" id="estacionamento_id" />
+
+                <!-- Informações Gerais -->
                 <div class="mb-3">
                   <label for="nome" class="form-label"
                     >Nome do Estacionamento</label
@@ -108,13 +107,13 @@
                     class="form-control"
                     placeholder="Nome"
                     id="nome"
+                    required
                   />
                 </div>
 
                 <!-- Endereço -->
                 <div>
                   <div class="row">
-                    <!-- cep -->
                     <div class="col mb-3">
                       <label for="cep" class="form-label">CEP</label>
                       <input
@@ -122,16 +121,14 @@
                         class="form-control"
                         placeholder="CEP"
                         id="cep"
+                        required
                       />
                     </div>
                   </div>
 
                   <div class="row">
-                    <!-- estado -->
                     <div class="col-md-6 mb-3">
-                      <label for="id_municipio" class="form-label"
-                        >Estado</label
-                      >
+                      <label for="id_estado" class="form-label">Estado</label>
                       <select class="form-control" id="id_estado">
                         <option value="" disabled selected>
                           Selecione um estado...
@@ -139,7 +136,6 @@
                       </select>
                     </div>
 
-                    <!-- municipio -->
                     <div class="col-md-6 mb-3">
                       <label for="id_municipio" class="form-label"
                         >Município</label
@@ -153,7 +149,6 @@
                   </div>
 
                   <div class="row">
-                    <!-- Bairro -->
                     <div class="col-md-12 mb-3">
                       <label for="bairro" class="form-label">Bairro</label>
                       <input
@@ -161,12 +156,12 @@
                         class="form-control"
                         placeholder="Bairro"
                         id="bairro"
+                        required
                       />
                     </div>
                   </div>
 
                   <div class="row">
-                    <!-- Logradouro -->
                     <div class="col-md-9 mb-3">
                       <label for="logradouro" class="form-label"
                         >Logradouro</label
@@ -176,10 +171,10 @@
                         class="form-control"
                         placeholder="Logradouro"
                         id="logradouro"
+                        required
                       />
                     </div>
 
-                    <!-- Numero -->
                     <div class="col-md-3 mb-3">
                       <label for="numero" class="form-label">Número</label>
                       <input
@@ -187,6 +182,7 @@
                         class="form-control"
                         placeholder="Número"
                         id="numero"
+                        required
                       />
                     </div>
                   </div>
@@ -201,8 +197,10 @@
                       class="form-control"
                       placeholder="Número do Alvará"
                       id="num_alvara"
+                      required
                     />
                   </div>
+
                   <div class="col-md-6 mb-3">
                     <label for="validade_alvara" class="form-label"
                       >Validade do Alvará</label
@@ -211,6 +209,7 @@
                       type="datetime-local"
                       class="form-control"
                       id="validade_alvara"
+                      required
                     />
                   </div>
                 </div>
@@ -221,8 +220,9 @@
                     <label for="hr_abertura" class="form-label"
                       >Horário Abertura</label
                     >
-                    <input type="time" class="form-control" id="hr_abertura" />
+                    <input type="time" class="form-control" id="hr_abertura" required/>
                   </div>
+
                   <div class="col-md-6 mb-3">
                     <label for="hr_fechamento" class="form-label"
                       >Horário Fechamento</label
@@ -231,6 +231,7 @@
                       type="time"
                       class="form-control"
                       id="hr_fechamento"
+                      required
                     />
                   </div>
                 </div>
@@ -246,8 +247,10 @@
                       class="form-control"
                       placeholder="Qtd. Comum"
                       id="qtd_vagas_comum"
+                      required
                     />
                   </div>
+
                   <div class="col-md-4 mb-3">
                     <label for="qtd_vagas_pcd" class="form-label"
                       >Vagas PCD</label
@@ -257,8 +260,10 @@
                       class="form-control"
                       placeholder="Qtd. PCD"
                       id="qtd_vagas_pcd"
+                      required
                     />
                   </div>
+
                   <div class="col-md-4 mb-3">
                     <label for="qtd_vagas_idoso" class="form-label"
                       >Vagas Idoso</label
@@ -268,6 +273,7 @@
                       class="form-control"
                       placeholder="Qtd. Idoso"
                       id="qtd_vagas_idoso"
+                      required
                     />
                   </div>
                 </div>
@@ -312,7 +318,7 @@
 
     <custom-footer
       logo="../../static/images/icone_e_parking.png"
-      cssSrc="static/css/footer.css"
+      cssSrc="../../static/css/footer.css"
       base="../../"
     ></custom-footer>
   </body>
