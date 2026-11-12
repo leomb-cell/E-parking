@@ -172,11 +172,14 @@ async function mostrarEstacionamentos() {
 }
 
 async function removerEstacionamento(id) {
+  const confirmar = confirm("Deseja realmente excluir este estacionamento?");
+  if (!confirmar) return;
   try {
     await deleteEstacionamento(id);
     mostrarEstacionamentos();
   } catch (error) {
     console.error("Erro ao excluir estacionamento:", error);
+    alert("Não foi possível excluir o estacionamento.");
   }
 }
 
