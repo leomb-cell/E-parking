@@ -1,7 +1,6 @@
 class CustomNavbar extends HTMLElement {
   constructor() {
     super();
-    // Cria um Shadow DOM para isolar o estilo e o HTML do componente (opcional, mas recomendado)
     this.attachShadow({ mode: "open" });
   }
 
@@ -91,5 +90,4 @@ class CustomNavbar extends HTMLElement {
   }
 }
 
-// Define a nova tag HTML <custom-navbar>
 customElements.define("custom-navbar", CustomNavbar);

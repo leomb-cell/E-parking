@@ -68,7 +68,7 @@ async function carregarDadosEstacionamento() {
   const id = params.get("id");
 
   if (!id) {
-    alert("ID do estacionamento não fornecido na URL!");
+    console.error("ID não encontrado...");
     window.location.href = "../meus_estacionamentos/meus_estacionamentos.html";
     return;
   }
@@ -83,7 +83,7 @@ async function carregarDadosEstacionamento() {
     const estacionamento = await getEstacionamentoPorId(id);
 
     if (!estacionamento) {
-      alert("Estacionamento não encontrado.");
+      console.error("Estacionamento não encontrado.");
       return;
     }
 

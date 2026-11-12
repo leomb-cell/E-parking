@@ -62,18 +62,33 @@ router.post("/", async (req, res) => {
 });
 
 // todos os estacionamentos
-router.get("/", async (req, res) => {});
+router.get("/", async (req, res) => {
+  return res.status(200).json({msg: 'todos os estacionamentos'});
+});
+
+// todos os estacionamentos de um usuario
+router.get("/usuario/:id", async (req, res) => {
+  return res.status(200).json([{msg: 'estacionamentos de um usuario'}]);
+});
 
 // um estacionamento especifico pelo id
-router.get("/:id", async (req, res) => {});
+router.get("/:id", async (req, res) => {
+  return res.status(200).json({msg: 'estacionamento especifico'});
+});
 
 // update
-router.put("/:id", async (req, res) => {});
+router.put("/:id", async (req, res) => {
+  return res.status(200).json({msg: 'Update estacionamentos'});
+});
 
 // delete
-router.delete("/:id", async (req, res) => {});
+router.delete("/:id", async (req, res) => {
+  return res.status(200).json({msg: 'Delete estacionamentos'});
+});
 
 // Tarifas
-router.post("/tarifas/:id", async (rec, res) => {});
+router.post("/tarifas/:id", async (rec, res) => {
+  return res.status(200).json({msg: 'Tarifas estacionamentos'});
+});
 
 export default router;

@@ -63,7 +63,7 @@ async function createEstacionamento(dados) {
 
 // Lista todos os Estacionamentos de um usuario (GET /estacionamentos/:id)
 async function getEstacionamentos(id) {
-  const estacionamentos = await request("GET", `/usuarios/estacionamentos/${id}`);
+  const estacionamentos = await request("GET", `/estacionamentos/usuario/${id}`);
 
   if (estacionamentos === null) {
     return [];
