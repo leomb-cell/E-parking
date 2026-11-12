@@ -1,7 +1,7 @@
 async function request(metodo, caminho, dados) {
   const opcoes = {
     method: metodo,
-    headers: {}
+    headers: {},
   };
 
   // Só enviamos corpo quando há dados (POST e PUT)
@@ -12,58 +12,72 @@ async function request(metodo, caminho, dados) {
 
   const resposta = await fetch(API_URL + caminho, opcoes);
 
-  // O fetch não trata 401, 404 ou 500 como erro: verificamos nós mesmos
   if (!resposta.ok) {
     const erro = new Error(
       "O servidor respondeu com o status " + resposta.status,
     );
-    erro.status = resposta.status; // guardamos o status para usar depois
+    erro.status = resposta.status;
     throw erro;
   }
 
-  // 204 (No Content) significa sucesso SEM corpo: não há JSON para ler
   if (resposta.status === 204) {
     return null;
   }
+
 
   return resposta.json();
 }
 
 // lista todos os usuários (GET /users)
 async function getEstados() {
-  const estados = await request("GET", "/enderecos/estados/");
+  try {
+    const estados = await request("GET", "/enderecos/estados/");
 
-  if (estados === null) {
-    return [];
+    if (estados === null) {
+      return [];
+    }
+
+    return estados;
+  } catch (error) {
+    console.error("Erro ao buscar estados: ", error);
   }
-
-  return estados;
 }
 
 // lista todos os municipios de um estado
 async function getMunicipiosEstado(id_estado) {
-  const municipios = await request(
-    "GET",
-    `/enderecos/estados/${id_estado}/municipios`,
-  );
+  try {
+    const municipios = await request(
+      "GET",
+      `/enderecos/estados/${id_estado}/municipios`,
+    );
 
-  if (municipios === null) {
-    return [];
+    if (municipios === null) {
+      return [];
+    }
+
+    return municipios;
+  } catch (error) {
+    console.error("Erro ao buscar municipios deste estado: ", error);
   }
-
-  return municipios;
 }
 
 // crud de estacionamentos
 
-// cria um estacionamento (POST /estacionamentos)
+// CREATE - cria um estacionamento (POST /estacionamentos)
 async function createEstacionamento(dados) {
-  return request("POST", "/estacionamentos", dados);
+  try {
+    return request("POST", "/estacionamentos", dados);
+  } catch (error) {
+    console.error("Erro ao criar estacionamento: ", error);
+  }
 }
 
-// Lista todos os Estacionamentos de um usuario (GET /estacionamentos/:id)
+// READ -  Lista todos os Estacionamentos de um usuario (GET /estacionamentos/:id)
 async function getEstacionamentos(id) {
-  const estacionamentos = await request("GET", `/estacionamentos/usuario/${id}`);
+  const estacionamentos = await request(
+    "GET",
+    `/estacionamentos/usuario/${id}`,
+  );
 
   if (estacionamentos === null) {
     return [];
@@ -72,23 +86,35 @@ async function getEstacionamentos(id) {
   return estacionamentos;
 }
 
-// retorna um estacionamento (GET /estacionamentos/:id)
+// READ - retorna um estacionamento (GET /estacionamentos/:id)
 async function getEstacionamentoPorId(id) {
-  const estacionamentos = await request("GET", `/estacionamentos/${id}`);
+  try {
+    const estacionamentos = await request("GET", `/estacionamentos/${id}`);
 
-  if (estacionamentos === null) {
-    return [];
+    if (estacionamentos === null) return [];
+
+    return estacionamentos;
+  } catch (error) {
+    console.error("Erro ao buscar estacionamentos deste Usuario: ", error);
   }
-
-  return estacionamentos;
 }
 
-// altera um estacionamento (PUT /estacionamentos/{id})
+// UPDATE - altera um estacionamento (PUT /estacionamentos/{id})
 async function putEstacionamento(id, dados) {
-  return request("PUT", `/estacionamentos/${id}` , dados);
+  try {
+    return request("PUT", `/estacionamentos/${id}`, dados);
+  } catch (error) {
+    console.error("Erro ao deletar estacionamento: ", error);
+    throw error;
+  }
 }
 
-// exclui um usuário (DELETE /estacionamentos/{id})
+// DELETE - exclui um usuário (DELETE /estacionamentos/{id})
 async function deleteEstacionamento(id) {
-return request("DELETE", `/estacionamentos/${id}`);
+  try {
+    return request("DELETE", `/estacionamentos/${id}`);
+  } catch (error) {
+    console.error("Erro ao deletar estacionamento: ", error);
+    throw error;
+  }
 }

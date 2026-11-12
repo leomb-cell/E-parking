@@ -128,9 +128,7 @@ async function mostrarEstacionamentos() {
 
     const tdEndereco = document.createElement("td");
 
-    tdEndereco.textContent =
-      estacionamento.endereco ||
-      `${estacionamento.logradouro}, ${estacionamento.numero}`;
+    tdEndereco.textContent = `${estacionamento.enderecos?.logradouro}, ${estacionamento.enderecos?.numero}`;
 
     const tdBotoes = document.createElement("td");
 
@@ -145,7 +143,7 @@ async function mostrarEstacionamentos() {
     btnEditar.textContent = "Editar";
 
     btnEditar.addEventListener("click", () => {
-      window.location.href = `editar_estacionamento.html?id=${estacionamento.id}`;
+      window.location.href = `../edit_estacionamento/edit_estacionamento.html?id=${estacionamento.id_estacionamento}`;
     });
 
     // Botão Excluir
@@ -156,7 +154,7 @@ async function mostrarEstacionamentos() {
     btnExcluir.textContent = "Excluir";
 
     btnExcluir.addEventListener("click", () =>
-      removerEstacionamento(estacionamento.id),
+      removerEstacionamento(estacionamento.id_estacionamento),
     );
 
     tdBotoes.appendChild(btnEditar);

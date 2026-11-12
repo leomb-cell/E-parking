@@ -61,6 +61,24 @@ async function carregarMunicipios(id_estado) {
   }
 }
 
+// Função auxiliar segura para extrair HH:mm de qualquer formato (String ou Data ISO)
+function formatarHorario(valorHorario) {
+  if (!valorHorario) return "";
+
+  // Se vier no formato ISO (ex: "1970-01-01T08:00:00.000Z")
+  if (typeof valorHorario === "string" && valorHorario.includes("T")) {
+    const partes = valorHorario.split("T")[1]; // Pega "08:00:00.000Z"
+    return partes.slice(0, 5); // Retorna "08:00"
+  }
+
+  // Se vier como string simples (ex: "08:00:00" ou "08:00")
+  if (typeof valorHorario === "string") {
+    return valorHorario.slice(0, 5);
+  }
+
+  return "";
+}
+
 // Buscar os dados do estacionamento pelo ID da URL e preencher os inputs
 
 async function carregarDadosEstacionamento() {
@@ -87,34 +105,63 @@ async function carregarDadosEstacionamento() {
       return;
     }
 
-    // Preenchendo os campos com os dados retornados
-    if (nome) nome.value = estacionamento.nome || "";
-    if (cep) cep.value = estacionamento.cep || "";
-    if (bairro) bairro.value = estacionamento.bairro || "";
-    if (logradouro) logradouro.value = estacionamento.logradouro || "";
-    if (numero) numero.value = estacionamento.numero || "";
-    if (num_alvara) num_alvara.value = estacionamento.num_alvara || "";
+    // Atalho para o endereço e para o município retornado do plural
+    const end = estacionamento.enderecos || {};
+    const muni = end.municipios || {};
 
-    // Formata a data para o input datetime-local (YYYY-MM-DDTHH:mm)
-    if (validade_alvara && estacionamento.validade_alvara) {
-      validade_alvara.value = estacionamento.validade_alvara.slice(0, 16);
+    // LOG DE DEPÓSITO: Veja o que aparece no F12 do navegador
+    console.log("Dados do Endereço:", end);
+    console.log("Dados do Município:", muni);
+    console.log("ID do Estado encontrado:", muni.id_estado);
+    console.log("ID do Município encontrado:", end.id_municipio);
+
+    // Preenchendo os campos com os dados retornados
+    nome.value = estacionamento.nome ? estacionamento.nome : "";
+
+    cep.value = end.cep ? end.cep : "";
+
+    bairro.value = end.bairro ? end.bairro : "";
+
+    logradouro.value = end.logradouro ? end.logradouro : "";
+
+    numero.value = end.numero ? end.numero : "";
+
+    num_alvara.value = estacionamento.num_alvara
+      ? estacionamento.num_alvara
+      : "";
+
+    hr_abertura.value = formatarHorario(estacionamento.hr_abertura);
+
+    hr_fechamento.value = formatarHorario(estacionamento.hr_fechamento);
+
+    qtd_vagas_comum.value = estacionamento.qtd_vagas_comum
+      ? estacionamento.qtd_vagas_comum
+      : "";
+
+    qtd_vagas_pcd.value = estacionamento.qtd_vagas_pcd
+      ? estacionamento.qtd_vagas_pcd
+      : "";
+
+    qtd_vagas_idoso.value = estacionamento.qtd_vagas_idoso
+      ? estacionamento.qtd_vagas_idoso
+      : "";
+
+    // Validade do Alvará (Input type="date" espera formato YYYY-MM-DD)
+    if (estacionamento.validade_alvara) {
+      validade_alvara.value = estacionamento.validade_alvara.slice(0, 10);
+    } else {
+      validade_alvara.value = "";
     }
 
-    if (hr_abertura) hr_abertura.value = estacionamento.hr_abertura || "";
-    if (hr_fechamento) hr_fechamento.value = estacionamento.hr_fechamento || "";
-    if (qtd_vagas_comum)
-      qtd_vagas_comum.value = estacionamento.qtd_vagas_comum || "";
-    if (qtd_vagas_pcd) qtd_vagas_pcd.value = estacionamento.qtd_vagas_pcd || "";
-    if (qtd_vagas_idoso)
-      qtd_vagas_idoso.value = estacionamento.qtd_vagas_idoso || "";
+    // Tratamento seguro do Estado e Município com conversão para String
+    if (muni && muni.id_estado && estado) {
+      const idEstadoStr = String(muni.id_estado);
+      estado.value = idEstadoStr;
+      await carregarMunicipios(idEstadoStr);
 
-    // Se houver estado, seleciona e carrega os municípios correspondentes antes de marcar o município
-    if (estacionamento.id_estado && estado) {
-      estado.value = estacionamento.id_estado;
-      await carregarMunicipios(estacionamento.id_estado);
-      if (municipio) municipio.value = estacionamento.id_municipio || "";
-    } else if (estacionamento.id_municipio && municipio) {
-      municipio.value = estacionamento.id_municipio;
+      if (municipio && end.id_municipio) {
+        municipio.value = String(end.id_municipio);
+      }
     }
   } catch (error) {
     console.error("Erro ao carregar dados para edição:", error);
@@ -157,7 +204,6 @@ async function atualizarEstacionamento(e) {
 
     // Redireciona para meus estacionamentos
     window.location.href = "../meus_estacionamentos/meus_estacionamentos.html";
-
   } catch (error) {
     console.error("Erro ao atualizar estacionamento:", error);
     alert("Ocorreu um erro ao salvar as alterações.");
