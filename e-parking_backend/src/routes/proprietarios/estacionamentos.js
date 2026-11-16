@@ -67,8 +67,7 @@ router.post("/", async (req, res) => {
 // todos os estacionamentos
 router.get("/", async (req, res) => {
     try {
-    const { id } = req.params;
-    const result = await EstacionamentosRepository.readAll(id);
+    const result = await EstacionamentosRepository.readAll();
     return res.status(200).json(result);
   } catch (error) {
     console.error("Erro ao buscar estacionamentos:", error);
