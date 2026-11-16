@@ -3,7 +3,8 @@ import EstacionamentosRepository from "../../repositories/proprietarios/estacion
 
 const router = Router();
 
-// novo estacionamento
+// CREATE
+
 router.post("/", async (req, res) => {
   try {
     const {
@@ -61,9 +62,20 @@ router.post("/", async (req, res) => {
   }
 });
 
+// READ
+
 // todos os estacionamentos
 router.get("/", async (req, res) => {
-  return res.status(200).json({ msg: "todos os estacionamentos" });
+    try {
+    const { id } = req.params;
+    const result = await EstacionamentosRepository.readAll(id);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Erro ao buscar estacionamentos:", error);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao buscar estacionamentos." });
+  }
 });
 
 // todos os estacionamentos de um usuario
@@ -71,9 +83,9 @@ router.get("/usuario/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await EstacionamentosRepository.readUserEstacionamentos(id);
-    return res.status(201).json(result);
+    return res.status(200).json(result);
   } catch (error) {
-    console.error("Erro ao cadastrar estacionamento:", error);
+    console.error("Erro ao buscar estacionamentos:", error);
     return res
       .status(500)
       .json({ error: "Erro interno ao buscar estacionamentos." });
@@ -94,7 +106,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// update
+// UPDATE
+
 router.put("/:id", async (req, res) => {
   try {
     const {
@@ -159,7 +172,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await EstacionamentosRepository.delete(id);
-    return res.status(204).send();
+    return res.status(200).json({msg: "Estacionamento deletado com sucesso!"});
   } catch (error) {
     console.error("Erro ao deletar estacionamento:", error);
     return res
@@ -168,7 +181,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Tarifas
+// Tarifas - Em Breve
 router.post("/tarifas/:id", async (rec, res) => {
   return res.status(200).json({ msg: "Tarifas estacionamentos" });
 });

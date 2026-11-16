@@ -77,7 +77,7 @@ class EstacionamentosRepository {
     }
   }
 
-  // Seleciona todos os estacionamentos
+  // Seleciona todos os estacionamentos de um Usuario
 
   async readUserEstacionamentos(id) {
     try {
@@ -200,7 +200,7 @@ class EstacionamentosRepository {
     }
   }
 
-  // adiciona tarifas
+  // adiciona tarifas - Em Breve
   async newTarfifa() {}
 }
 
